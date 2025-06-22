@@ -1,19 +1,22 @@
-const mysql = require('mysql2');
 require('dotenv').config();
+const mysql = require('mysql2');
 
-console.log('DB_HOST:', process.env.DB_HOST);
-console.log('DB_USER:', process.env.DB_USER);
-console.log('DB_PASSWORD:', process.env.DB_PASSWORD ? '******' : 'Not set');
-console.log('DB_NAME:', process.env.DB_NAME);
-console.log('DB_PORT:', process.env.DB_PORT || 'Not set');
+let host = process.env.DB_HOST || '';
+let port = 3306;  // default port
 
+// If the host includes ":port", split it
+if (host.includes(':')) {
+  const parts = host.split(':');
+  host = parts[0];
+  port = parseInt(parts[1], 10);
+}
 
 const db = mysql.createConnection({
-  host: process.env.DB_HOST,
+  host: host,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-   port: process.env.DB_PORT || 3306
+  port: port,
 });
 
 db.connect(err => {
